@@ -14,12 +14,9 @@ export const GenreSelect = ({ genres, selectedGenre, onSelect }) => {
             <button
                 key={genre}
                 onClick={() => handleSelect(genre)}
-                className="font-medium uppercase px-8 py-4"
-                style={{
-                  fontWeight: genre === selected
-                      ? 600
-                      : 500,
-                }}
+                className={`font-medium uppercase px-8 py-4 ${
+                    genre === selected ? 'font-semibold' : 'font-medium'
+                }`}
             >
               {genre}
             </button>

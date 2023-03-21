@@ -6,17 +6,15 @@ class Counter extends React.Component {
     this.state = {
       value: this.props.initialValue,
     };
-    this.handleIncrement = this.handleIncrement.bind(this);
-    this.handleDecrement = this.handleDecrement.bind(this);
   }
 
-  handleIncrement() {
+  handleIncrement = () => {
     this.setState({ value: this.state.value + 1 });
-  }
+  };
 
-  handleDecrement() {
+  handleDecrement = () => {
     this.setState({ value: this.state.value - 1 });
-  }
+  };
 
   render() {
     return React.createElement(
