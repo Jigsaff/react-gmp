@@ -9,7 +9,7 @@ export const GenreSelect = ({ genres, selectedGenre, onSelect }) => {
   }
 
   return (
-      <div>
+      <div data-testid="genre-select">
         {genres.map(genre => (
             <button
                 key={genre}
