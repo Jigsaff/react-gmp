@@ -30,7 +30,7 @@ class Counter extends React.Component {
         ),
         React.createElement(
             'span',
-            null,
+            { className: 'text-white' },
             this.state.value,
         ),
         React.createElement(
