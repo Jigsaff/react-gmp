@@ -14,10 +14,20 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
+### `npm run storybook`
+
+The "storybook" command is used to run Storybook, an open-source tool for developing UI components in isolation. With
+Storybook, you can create a library of reusable UI components and view them in various states and contexts.
+
+To use this command, simply run npm run storybook in your terminal. This will start the Storybook development server and
+open the Storybook UI in your default browser. From there, you can navigate to your components and see them in different
+states and contexts, as well as test their behavior with various input combinations.
+
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more
+information.
 
 ### `npm run build`
 
@@ -29,12 +39,21 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+### `npm run tailwind`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+The "tailwind" command is used to compile your Tailwind CSS styles into a single, optimized CSS file. Tailwind CSS is a
+popular CSS framework that provides a set of pre-defined classes that can be used to style your HTML elements.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+To use this command, simply run npm run tailwind in your terminal. This will compile your Tailwind CSS styles and output
+the resulting CSS file to your project's build directory.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### `npm run cy:run`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The "cy:run" command is used to run end-to-end tests using Cypress. Cypress is a popular testing framework that enables
+developers to write automated tests for web applications. This command runs all the Cypress tests in headless mode,
+meaning that the tests will run in the background without opening a browser window.
+
+To use this command, simply run npm run cy:run in your terminal. This will start the tests and output the results to the
+terminal. If any of the tests fail, Cypress will provide detailed error messages to help you diagnose the issue.
+
+
