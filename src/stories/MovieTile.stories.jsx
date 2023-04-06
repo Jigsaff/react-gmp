@@ -15,4 +15,5 @@ Default.args = {
     releaseYear: 1994,
     genres: ['Crime', 'Drama'],
   },
+  onClick: () => console.log('onClick'),
 };

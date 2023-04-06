@@ -3,8 +3,19 @@ import MovieDetails from './components/MovieDetails';
 import SortControl from './components/SortControl';
 import { useState } from 'react';
 
+const sortingOptions = [
+  {
+    value: 'releaseDate',
+    formattedValue: 'Release Date',
+  },
+  {
+    value: 'title',
+    formattedValue: 'Title',
+  },
+];
+
 function App() {
-  const [sortOrder, setSortOrder] = useState('releaseDate');
+  const [sortOrder, setSortOrder] = useState(sortingOptions[0]);
 
   function handleSortChange(newSortOrder) {
     setSortOrder(newSortOrder);
