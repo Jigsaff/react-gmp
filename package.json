@@ -1,13 +1,15 @@
 {
   "name": "react-gmp",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "dependencies": {
     "@storybook/addon-docs": "^6.5.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "react-portal": "^4.2.2",
+    "focus-trap-react": "10.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -17,11 +19,11 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cy:spec": "cypress run --spec",
-    "storybook": "npm-run-all --parallel watch:*",
+    "storybook": "npm-run-all --parallel watch:tailwind watch:storybook",
     "watch:tailwind": "npx tailwindcss -i ./src/input.css -o ./src/index.css --watch",
     "watch:storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "tailwind": "npx tailwindcss -i ./src/input.css -o ./src/index.css"
+    "tailwind": "npx tailwindcss -i ./src/input.css -o ./src/index.css --watch"
   },
   "eslintConfig": {
     "extends": [
