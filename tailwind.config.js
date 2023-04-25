@@ -9,6 +9,9 @@ module.exports = {
         'dark-gray': '#424242',
         'light-gray': '#555555',
       },
+      backgroundImage: {
+        'header': 'url(\'./assets/images/header.png\')',
+      },
     },
   },
   plugins: [

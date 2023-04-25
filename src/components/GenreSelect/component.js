@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { genres } from '../MovieTile/genres';
 
-export const GenreSelect = ({ genres, selectedGenre, onSelect }) => {
+export const GenreSelect = ({ selectedGenre, onSelect }) => {
   const [selected, setSelected] = useState(selectedGenre);
 
   function handleSelect(genre) {

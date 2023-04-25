@@ -18,19 +18,19 @@ export const SearchForm = ({ initialQuery, onSearch }) => {
   };
 
   return (
-      <div
-          className="bg-[url('/img/header.png')] h-[396px] flex flex-row items-center">
+      <>
         <input
-            className="w-[713px] h-[57px] bg-[#323232] opacity-70 rounded ml-[150px] text-xl pl-5 text-white opacity-30"
+            className="w-[713px] h-[57px] bg-[#323232] rounded ml-[150px] text-xl pl-5 text-white opacity-70"
             type="text"
             value={query}
             onChange={handleInputChange}
             onKeyDown={handleKeyPress}
+            data-testid="search-input"
         />
         <button
             className="bg-[#F65261] rounded w-[223px] h-[57px] uppercase text-white ml-[14px] font-medium text-xl"
             onClick={handleSearch}>Search
         </button>
-      </div>
+      </>
   );
 };

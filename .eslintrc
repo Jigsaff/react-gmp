@@ -4,5 +4,8 @@
   ],
   "env": {
     "cypress/globals": true
-  }
+  },
+  "extends": [
+    "plugin:react-hooks/recommended"
+  ]
 }
