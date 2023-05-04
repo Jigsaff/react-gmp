@@ -4,7 +4,7 @@ import FocusTrap from 'focus-trap-react';
 export const Dialog = ({ title, children, onClose }) => {
 
   return (
-      <PortalWithState closeOnEsc closeOnOutsideClick>
+      <PortalWithState closeOnEsc closeOnOutsideClick onClose={onClose}>
         {({ openPortal, closePortal, isOpen, portal }) => (
             <div role="dialog">
               <button className="text-white" onClick={openPortal}>
@@ -21,8 +21,7 @@ export const Dialog = ({ title, children, onClose }) => {
                           <div>{children}</div>
                           <button
                               className="absolute top-3 right-3 text-lg text-white cursor-pointer"
-                              onClick={closePortal}
-                          >
+                              onClick={closePortal}>
                             X
                           </button>
                         </div>
@@ -33,6 +32,5 @@ export const Dialog = ({ title, children, onClose }) => {
             </div>
         )}
       </PortalWithState>
-
   );
 };
