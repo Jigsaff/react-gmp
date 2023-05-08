@@ -1,32 +1,44 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import MovieTile from './component';
 
 const mockMovie = {
-  imageUrl: 'https://example.com/image.jpg',
-  movieName: 'Test Movie',
-  releaseYear: '2022',
+  id: 1,
+  poster_path: 'https://example.com/poster.jpg',
+  title: 'Example Movie',
+  release_date: '2021-05-01',
   genres: ['Action', 'Adventure'],
 };
 
 describe('MovieTile', () => {
-  it('renders movie tile correctly', () => {
-    const { getByAltText, getByText } = render(<MovieTile movie={mockMovie}
-                                                          onClick={() => {}}/>);
-
-    expect(getByAltText(mockMovie.movieName))
-        .toHaveAttribute('src', mockMovie.imageUrl);
-    expect(getByText(mockMovie.movieName)).toBeInTheDocument();
-    expect(getByText(mockMovie.releaseYear)).toBeInTheDocument();
-    expect(getByText(mockMovie.genres.join(', '))).toBeInTheDocument();
+  it('renders movie poster', () => {
+    render(<MovieTile movie={mockMovie}/>);
+    const poster = screen.getByAltText(mockMovie.title);
+    expect(poster).toHaveAttribute('src', mockMovie.poster_path);
   });
 
-  it('calls onClick function when tile is clicked', () => {
-    const mockOnClick = jest.fn();
-    const { getByTestId } = render(<MovieTile movie={mockMovie}
-                                              onClick={mockOnClick}/>);
+  it('renders movie title', () => {
+    render(<MovieTile movie={mockMovie}/>);
+    const title = screen.getByText(mockMovie.title);
+    expect(title).toBeInTheDocument();
+  });
 
-    fireEvent.click(getByTestId('movie-tile'));
+  it('renders movie release year', () => {
+    render(<MovieTile movie={mockMovie}/>);
+    const releaseYear = screen.getByText('2021');
+    expect(releaseYear).toBeInTheDocument();
+  });
 
-    expect(mockOnClick).toHaveBeenCalledTimes(1);
+  it('renders movie genres', () => {
+    render(<MovieTile movie={mockMovie}/>);
+    const genres = screen.getByText('Action, Adventure');
+    expect(genres).toBeInTheDocument();
+  });
+
+  it('calls onClick when clicked', () => {
+    const handleClick = jest.fn();
+    render(<MovieTile movie={mockMovie} onClick={handleClick}/>);
+    const tile = screen.getByTestId('movie-tile');
+    tile.click();
+    expect(handleClick).toHaveBeenCalledWith(mockMovie);
   });
 });

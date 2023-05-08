@@ -1,4 +1,4 @@
-const formatTime = minutes => {
+export const formatTime = minutes => {
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
   const formattedHours = hours > 0 ? `${hours}h` : '';

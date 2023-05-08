@@ -1,28 +1,38 @@
 import { render, fireEvent } from '@testing-library/react';
 import { SortControl } from './component';
 
-test('renders the component with the correct options and current selection',
-    () => {
-      const { getByLabelText } = render(<SortControl
-          currentSelection="releaseDate"/>);
-      const selectElement = getByLabelText('Sort by');
+describe('SortControl component', () => {
+  test('renders correctly', () => {
+    const { getByLabelText, getByTestId } = render(
+        <SortControl sortCriterion="releaseDate" onSortCriterion={() => {}}/>,
+    );
 
-      expect(selectElement).toBeInTheDocument();
-      expect(selectElement).toHaveValue('releaseDate');
-      expect(selectElement.options).toHaveLength(2);
-      expect(selectElement.options[0]).toHaveTextContent('Release Date');
-      expect(selectElement.options[1]).toHaveTextContent('Title');
-    });
+    const label = getByLabelText('Sort by');
+    expect(label).toBeInTheDocument();
 
-test(
-    'calls the onSelectionChange function when the select element value changes',
-    () => {
-      const handleSelectionChange = jest.fn();
-      const { getByLabelText } = render(<SortControl currentSelection="title"
-                                                     onSelectionChange={handleSelectionChange}/>);
-      const selectElement = getByLabelText('Sort by');
+    const select = getByTestId('sort-control');
+    expect(select).toBeInTheDocument();
+    expect(select.value).toBe('releaseDate');
 
-      fireEvent.change(selectElement, { target: { value: 'releaseDate' } });
+    const options = select.getElementsByTagName('option');
+    expect(options.length).toBe(2);
+    expect(options[0].value).toBe('releaseDate');
+    expect(options[0].textContent).toBe('Release Date');
+    expect(options[1].value).toBe('title');
+    expect(options[1].textContent).toBe('Title');
+  });
 
-      expect(handleSelectionChange).toHaveBeenCalledWith('releaseDate');
-    });
+  test('calls onSortCriterion when select value changes', () => {
+    const onSortCriterionMock = jest.fn();
+    const { getByTestId } = render(
+        <SortControl sortCriterion="releaseDate"
+                     onSortCriterion={onSortCriterionMock}/>,
+    );
+
+    const select = getByTestId('sort-control');
+    fireEvent.change(select, { target: { value: 'title' } });
+
+    expect(onSortCriterionMock).toHaveBeenCalledTimes(1);
+    expect(onSortCriterionMock).toHaveBeenCalledWith('title');
+  });
+});
