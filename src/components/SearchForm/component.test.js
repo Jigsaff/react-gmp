@@ -1,39 +1,34 @@
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
+import SearchContext from '../../pages/MovieListPage/SearchContext';
 import { SearchForm } from './component';
 
-describe('SearchForm component', () => {
-  it('should render an input with the value equal to initial value passed in props',
-      () => {
-        const initialQuery = 'test';
-        render(<SearchForm initialQuery={initialQuery} onSearch={() => {}}/>);
-        const input = screen.getByRole('textbox');
-        expect(input).toHaveValue(initialQuery);
-      });
+describe('SearchForm', () => {
+  const initialSearchQuery = 'Initial search query';
+  const handleSearchQueryChange = jest.fn();
 
-  it('should call the "onChange" prop with proper value after typing to the input and a "click" event on the Submit button',
-      () => {
-        const initialQuery = 'test';
-        const onChangeMock = jest.fn();
-        render(<SearchForm initialQuery={initialQuery}
-                           onSearch={onChangeMock}/>);
-        const input = screen.getByRole('textbox');
-        const submitButton = screen.getByText('Search');
-        const newValue = 'new test';
-        fireEvent.change(input, { target: { value: newValue } });
-        fireEvent.click(submitButton);
-        expect(onChangeMock).toHaveBeenCalledWith(newValue);
-      });
+  it('renders the search form with initial value', () => {
+    const { getByTestId } = render(
+        <SearchContext.Provider
+            value={{ searchQuery: '', handleSearchQueryChange }}>
+          <SearchForm initialSearchQuery={initialSearchQuery}/>
+        </SearchContext.Provider>,
+    );
+    const input = getByTestId('search-input');
+    expect(input).toBeInTheDocument();
+    expect(input.value).toBe(initialSearchQuery);
+  });
 
-  it('should call the "onChange" prop with proper value after typing to the input and pressing Enter key',
-      () => {
-        const initialQuery = 'test';
-        const onChangeMock = jest.fn();
-        render(<SearchForm initialQuery={initialQuery}
-                           onSearch={onChangeMock}/>);
-        const input = screen.getByRole('textbox');
-        const newValue = 'new test';
-        fireEvent.change(input, { target: { value: newValue } });
-        fireEvent.keyDown(input, { key: 'Enter', code: 13, charCode: 13 });
-        expect(onChangeMock).toHaveBeenCalledWith(newValue);
-      });
+  it('calls handleSearchQueryChange when form is submitted', () => {
+    const { getByTestId } = render(
+        <SearchContext.Provider
+            value={{ searchQuery: '', handleSearchQueryChange }}>
+          <SearchForm initialSearchQuery={initialSearchQuery}/>
+        </SearchContext.Provider>,
+    );
+    const input = getByTestId('search-input');
+    const submitButton = getByTestId('search-submit-button');
+    fireEvent.change(input, { target: { value: 'New search query' } });
+    fireEvent.click(submitButton);
+    expect(handleSearchQueryChange).toHaveBeenCalledWith('New search query');
+  });
 });

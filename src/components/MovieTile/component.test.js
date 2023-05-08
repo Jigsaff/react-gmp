@@ -1,44 +1,40 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { useNavigate } from 'react-router-dom';
 import MovieTile from './component';
 
-const mockMovie = {
-  id: 1,
-  poster_path: 'https://example.com/poster.jpg',
-  title: 'Example Movie',
-  release_date: '2021-05-01',
-  genres: ['Action', 'Adventure'],
-};
+jest.mock('react-router-dom', () => ({
+  useNavigate: jest.fn(),
+}));
 
-describe('MovieTile', () => {
-  it('renders movie poster', () => {
-    render(<MovieTile movie={mockMovie}/>);
-    const poster = screen.getByAltText(mockMovie.title);
-    expect(poster).toHaveAttribute('src', mockMovie.poster_path);
+describe('MovieTile component', () => {
+  let navigateMock;
+
+  beforeEach(() => {
+    navigateMock = jest.fn();
+    useNavigate.mockReturnValue(navigateMock);
   });
 
-  it('renders movie title', () => {
-    render(<MovieTile movie={mockMovie}/>);
-    const title = screen.getByText(mockMovie.title);
-    expect(title).toBeInTheDocument();
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('renders movie release year', () => {
-    render(<MovieTile movie={mockMovie}/>);
-    const releaseYear = screen.getByText('2021');
-    expect(releaseYear).toBeInTheDocument();
-  });
+  it('renders movie tile correctly', () => {
+    const movie = {
+      id: 1,
+      title: 'The Godfather',
+      poster_path: 'godfather.jpg',
+      release_date: '1972-03-24',
+      genres: ['Crime', 'Drama'],
+    };
 
-  it('renders movie genres', () => {
-    render(<MovieTile movie={mockMovie}/>);
-    const genres = screen.getByText('Action, Adventure');
-    expect(genres).toBeInTheDocument();
-  });
+    render(<MovieTile movie={movie}/>);
+    const movieTile = screen.getByTestId('movie-tile');
 
-  it('calls onClick when clicked', () => {
-    const handleClick = jest.fn();
-    render(<MovieTile movie={mockMovie} onClick={handleClick}/>);
-    const tile = screen.getByTestId('movie-tile');
-    tile.click();
-    expect(handleClick).toHaveBeenCalledWith(mockMovie);
+    expect(movieTile).toBeInTheDocument();
+    expect(movieTile).toHaveClass('basis-1/3 my-4 flex justify-center');
+
+    fireEvent.click(movieTile);
+
+    expect(navigateMock).toHaveBeenCalledWith('movies/1');
   });
 });

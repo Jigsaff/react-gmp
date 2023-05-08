@@ -28,9 +28,9 @@ export const MovieDetails = ({ movie }) => {
           </div>
           <div className="basis-3/4">
             <div className="flex flex-row">
-              <h2 className="font-light text-5xl uppercase mr-6 text-white"
+              <h2 className="font-light text-5xl uppercase mr-6 pt-12 text-white"
                   data-testid="movie-details">{title}</h2>
-              <p className="font-light text-xl border border-white rounded-full w-12 h-12 flex justify-center items-center text-white">{vote_average}</p>
+              <p className="font-light text-xl border border-white rounded-full w-12 h-12 mt-14 flex justify-center items-center text-white">{vote_average}</p>
             </div>
             <div className="flex flex-row my-12">
               <p className="font-light text-2xl text-pink-red mr-12">{release_date.slice(

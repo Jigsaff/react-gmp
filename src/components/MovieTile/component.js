@@ -1,9 +1,16 @@
-export const MovieTile = ({ movie, onClick }) => {
+import { useNavigate } from 'react-router-dom';
+
+export const MovieTile = ({ movie }) => {
+  const navigate = useNavigate();
   const { poster_path, title, release_date, genres } = movie;
+
+  const handleTileClick = () => {
+    navigate(`movies/${movie.id}`);
+  };
 
   return (
       <div className="basis-1/3 my-4 flex justify-center"
-           data-testid="movie-tile" onClick={() => onClick(movie)}>
+           data-testid="movie-tile" onClick={handleTileClick}>
         <div className="w-[323px]">
           <img className="w-[323px] h-[486px] mb-2" src={poster_path}
                alt={title}/>

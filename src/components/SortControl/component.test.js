@@ -1,7 +1,7 @@
 import { render, fireEvent } from '@testing-library/react';
 import { SortControl } from './component';
 
-describe('SortControl component', () => {
+describe('SortControl index.js', () => {
   test('renders correctly', () => {
     const { getByLabelText, getByTestId } = render(
         <SortControl sortCriterion="releaseDate" onSortCriterion={() => {}}/>,

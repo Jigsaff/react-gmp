@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 import MovieDetails from '../../components/MovieDetails';
 import GenreSelect from '../../components/GenreSelect';
@@ -6,38 +7,47 @@ import SortControl from '../../components/SortControl';
 import MovieTile from '../../components/MovieTile';
 import useFetch from '../../hooks/useFetch';
 import Header from '../../components/Header';
+import SearchContext from './SearchContext';
 
 const MovieListPage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortCriterion, setSortCriterion] = useState('');
-  const [activeGenre, setActiveGenre] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const searchQuery = searchParams.get('query') || '';
+  const sortCriterion = searchParams.get('sortBy') || '';
+  const activeGenre = searchParams.get('genre') || '';
+
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const sortOrder = sortCriterion === 'title' ? 'asc' : 'desc';
 
   const url = 'http://localhost:4000/movies';
-  const params = {
-    sortBy: sortCriterion,
-    sortOrder: 'desc',
-    search: searchQuery,
-    searchBy: 'title',
-    filter: activeGenre,
-  };
+  const params = useMemo(() => {
+    return {
+      sortBy: sortCriterion,
+      sortOrder: sortOrder,
+      search: searchQuery,
+      searchBy: 'title',
+      filter: activeGenre,
+    };
+  }, [
+    sortCriterion,
+    sortOrder,
+    searchQuery,
+    activeGenre,
+  ]);
 
+  const navigate = useNavigate();
   const { loading, error, data: fetchedMovies } = useFetch(url, params);
 
   useEffect(() => {
     setMovies(fetchedMovies);
   }, [fetchedMovies]);
 
-  const handleMovieClick = useCallback(movie => {
-    setSelectedMovie(prevSelectedMovie => {
-      if (prevSelectedMovie && prevSelectedMovie.id === movie.id) {
-        return null;
-      } else {
-        return movie;
-      }
+  const handleMovieClick = movie => {
+    navigate(`/movies/${movie.id}`, {
+      state: { searchParams: searchParams.toString() },
     });
-  }, []);
+  };
 
   const handleBackClick = () => {
     setSelectedMovie(null);
@@ -48,48 +58,71 @@ const MovieListPage = () => {
   };
 
   const handleSearchQueryChange = value => {
-    setSearchQuery(value);
+    setSearchParams(new URLSearchParams({ ...searchParams, query: value }));
+  };
+
+  const handleSortCriterionChange = value => {
+    setSearchParams(prev => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set('sortBy', value);
+      return newParams;
+    });
+  };
+
+  const handleActiveGenreChange = value => {
+    setSearchParams(prev => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set('genre', value);
+      return newParams;
+    });
   };
 
   return (
-      <div className="bg-light-black">
+      <SearchContext.Provider
+          value={{
+            searchQuery,
+            handleSearchQueryChange,
+          }}
+      >
+        <div className="bg-light-black">
 
-        {selectedMovie ? (
-            <MovieDetails movie={selectedMovie} onBackClick={handleBackClick}/>
-        ) : (
-            <div>
-              <Header
-                  onAddMovie={toggleModal}
-                  initialSearchQuery={searchQuery}
-                  onSearch={handleSearchQueryChange}
-              >
-              </Header>
-              <div className="flex justify-between">
-                <GenreSelect
-                    selectedGenre={activeGenre}
-                    onSelect={setActiveGenre}
-                />
-                <SortControl
-                    sortCriterion={sortCriterion}
-                    onSortCriterion={setSortCriterion}
-                />
-              </div>
-            </div>
-
-        )}
-        <div className="flex flex-wrap mt-5">
-          {loading && <div>Loading...</div>}
-          {error && <div>Error: {error}</div>}
-          {movies
-              .map(movie => (
-                  <MovieTile
-                      key={movie.id}
-                      movie={movie}
-                      onClick={handleMovieClick}
+          {selectedMovie ? (
+              <MovieDetails movie={selectedMovie}
+                            onBackClick={handleBackClick}/>
+          ) : (
+              <div>
+                <Header
+                    onAddMovie={toggleModal}
+                    initialSearchQuery={searchQuery}
+                >
+                </Header>
+                <div className="flex justify-between">
+                  <GenreSelect
+                      selectedGenre={activeGenre}
+                      onSelect={handleActiveGenreChange}
                   />
-              ))}
+                  <SortControl
+                      sortCriterion={sortCriterion}
+                      onSortCriterion={handleSortCriterionChange}
+                  />
+                </div>
+              </div>
+
+          )}
+          <div className="flex flex-wrap mt-5">
+            {loading && <div>Loading...</div>}
+            {error && <div>Error: {error}</div>}
+            {movies
+                .map(movie => (
+                    <MovieTile
+                        key={movie.id}
+                        movie={movie}
+                        onClick={handleMovieClick}
+                    />
+                ))}
+          </div>
         </div>
-      </div>
+      </SearchContext.Provider>
   );
 };
 
