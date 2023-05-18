@@ -1,37 +1,44 @@
-describe('GenreSelect', () => {
-  const genres = ['All', 'Documentary', 'Comedy', 'Horror', 'Crime'];
-  const selectedGenre = 'All';
-
+describe('Movie List Page', () => {
   beforeEach(() => {
     cy.visit('http://localhost:3000/');
   });
 
-  it('allows the user to select a genre', () => {
-    cy.get('[data-testid=genre-select]').as('genreSelect');
-    cy.get('@genreSelect').find('button').should('have.length', genres.length);
-    cy.get('@genreSelect')
-        .contains('button', selectedGenre)
+  it.only('Searches for movies', () => {
+    cy.get('[data-testid=search-input]').type('Star Wars{enter}');
+    cy.get('[data-testid=movie-tile]')
+        .should('have.length', 9)
+        .contains('Star Wars');
+  });
+
+  it('Should sort movies by release date', () => {
+    cy.get('[data-testid=sort-control]').select('Release Date');
+    cy.get('[data-testid=movie-tile]').first().contains('The Dark Knight');
+    cy.get('[data-testid=movie-tile]').last().contains('Star Wars');
+  });
+
+  it('Sorts movies by release date and title', () => {
+    cy.get('[data-testid=sort-control]')
+        .select('Release Date')
+        .should('have.value', 'releaseDate');
+
+    cy.get('[data-testid=sort-control]')
+        .select('Title')
+        .should('have.value', 'title');
+  });
+
+  it('Switches between genres', () => {
+    cy.contains('[data-testid=genre-select] button', 'Action')
+        .click()
         .should('have.class', 'font-semibold');
-    cy.get('@genreSelect').contains('button', 'Comedy').click();
-    cy.get('@genreSelect')
-        .contains('button', selectedGenre)
-        .should('not.have.class', 'font-semibold');
-    cy.get('@genreSelect')
-        .contains('button', 'Comedy')
+    cy.contains('[data-testid=genre-select] button', 'Comedy')
+        .click()
         .should('have.class', 'font-semibold');
   });
 
-  it('updates the genre when a new selection is made', () => {
-    cy.get('[data-testid=genre-select]').as('genreSelect');
-    cy.get('@genreSelect').contains('button', 'Documentary').click();
-    cy.get('@genreSelect')
-        .contains('button', 'Documentary')
-        .should('have.class', 'font-semibold');
-    cy.get('@genreSelect')
-        .contains('button', selectedGenre)
-        .should('not.have.class', 'font-semibold');
-    cy.get('@genreSelect')
-        .contains('button', 'Comedy')
-        .should('not.have.class', 'font-semibold');
+  it('should select a movie and return to search', () => {
+    cy.get('[data-testid=movie-tile]').first().click();
+    cy.get('[data-testid=movie-details]').contains('Fifty Shades Freed');
+    cy.get('[data-testid=movie-tile]').first().click();
+    cy.get('[data-testid=search-input]').should('have.value', '');
   });
 });

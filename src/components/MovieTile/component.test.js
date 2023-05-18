@@ -1,32 +1,40 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { useNavigate } from 'react-router-dom';
 import MovieTile from './component';
 
-const mockMovie = {
-  imageUrl: 'https://example.com/image.jpg',
-  movieName: 'Test Movie',
-  releaseYear: '2022',
-  genres: ['Action', 'Adventure'],
-};
+jest.mock('react-router-dom', () => ({
+  useNavigate: jest.fn(),
+}));
 
-describe('MovieTile', () => {
-  it('renders movie tile correctly', () => {
-    const { getByAltText, getByText } = render(<MovieTile movie={mockMovie}
-                                                          onClick={() => {}}/>);
+describe('MovieTile component', () => {
+  let navigateMock;
 
-    expect(getByAltText(mockMovie.movieName))
-        .toHaveAttribute('src', mockMovie.imageUrl);
-    expect(getByText(mockMovie.movieName)).toBeInTheDocument();
-    expect(getByText(mockMovie.releaseYear)).toBeInTheDocument();
-    expect(getByText(mockMovie.genres.join(', '))).toBeInTheDocument();
+  beforeEach(() => {
+    navigateMock = jest.fn();
+    useNavigate.mockReturnValue(navigateMock);
   });
 
-  it('calls onClick function when tile is clicked', () => {
-    const mockOnClick = jest.fn();
-    const { getByTestId } = render(<MovieTile movie={mockMovie}
-                                              onClick={mockOnClick}/>);
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-    fireEvent.click(getByTestId('movie-tile'));
+  it('renders movie tile correctly', () => {
+    const movie = {
+      id: 1,
+      title: 'The Godfather',
+      poster_path: 'godfather.jpg',
+      release_date: '1972-03-24',
+      genres: ['Crime', 'Drama'],
+    };
 
-    expect(mockOnClick).toHaveBeenCalledTimes(1);
+    render(<MovieTile movie={movie}/>);
+    const movieTile = screen.getByTestId('movie-tile');
+
+    expect(movieTile).toBeInTheDocument();
+    expect(movieTile).toHaveClass('basis-1/3 my-4 flex justify-center');
+
+    fireEvent.click(movieTile);
+
+    expect(navigateMock).toHaveBeenCalledWith('movies/1');
   });
 });

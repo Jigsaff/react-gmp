@@ -1,20 +1,19 @@
 import { render, fireEvent } from '@testing-library/react';
-import Dialog from './index';
+import { Dialog } from './component';
 
 describe('Dialog', () => {
-  it('should open and close the dialog when button is clicked', () => {
-    const onCloseMock = jest.fn();
-
-    const { getByText, queryByText } = render(
-        <Dialog title="Test Dialog" onClose={onCloseMock}/>,
+  it('opens and closes portal when button is clicked', () => {
+    const { getByRole, getByText, queryByText } = render(
+        <Dialog title="Test Dialog">
+          <p>Dialog content</p>
+        </Dialog>,
     );
 
-    expect(queryByText('Test Dialog')).not.toBeInTheDocument();
-    fireEvent.click(getByText('Open Portal'));
-    expect(getByText('Test Dialog')).toBeInTheDocument();
-    fireEvent.click(getByText('X'));
-    expect(queryByText('Test Dialog')).not.toBeInTheDocument();
-    expect(onCloseMock).toHaveBeenCalled();
+    expect(queryByText('Dialog content')).not.toBeInTheDocument();
+    fireEvent.click(getByRole('button', { name: 'Open Portal' }));
+    expect(getByText('Dialog content')).toBeInTheDocument();
+    fireEvent.click(getByRole('button', { name: 'X' }));
+    expect(queryByText('Dialog content')).not.toBeInTheDocument();
   });
 });
 
