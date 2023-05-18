@@ -16,3 +16,4 @@ describe('Dialog', () => {
     expect(queryByText('Dialog content')).not.toBeInTheDocument();
   });
 });
+

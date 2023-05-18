@@ -6,7 +6,7 @@ export const Dialog = ({ title, children, onClose }) => {
   const buttonRef = useRef(null);
 
   return (
-      <PortalWithState closeOnEsc closeOnOutsideClick>
+      <PortalWithState closeOnEsc closeOnOutsideClick onClose={onClose}>
         {({ openPortal, closePortal, isOpen, portal }) => (
             <div role="dialog">
               <button
