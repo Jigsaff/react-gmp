@@ -1,3 +1,3 @@
-import MovieDetails from './component';
+import { MovieDetails } from './component';
 
 export default MovieDetails;
