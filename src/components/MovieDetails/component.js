@@ -1,47 +1,41 @@
-export const formatTime = minutes => {
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
-  const formattedHours = hours > 0 ? `${hours}h` : '';
-  const formattedMinutes = remainingMinutes > 0 ? `${remainingMinutes}m` : '';
-  const separator = formattedHours && formattedMinutes ? ' ' : '';
-  return formattedHours + separator + formattedMinutes;
-};
+import Button from '../Button';
 
-export const MovieDetails = ({ movie }) => {
+export const MovieDetails = ({ movie, onClose }) => {
+  if (!movie) {
+    return <p>Movie not found</p>;
+  }
   const {
-    poster_path,
-    title,
-    release_date,
-    vote_average,
-    runtime,
-    overview,
+    poster_path: imageUrl,
+    title: movieName,
+    release_date: releaseYear,
+    vote_average: rating,
+    runtime: duration,
+    overview: description,
   } = movie;
 
-  const formattedRuntime = formatTime(runtime);
+  const imageBaseUrl = 'https://image.tmdb.org/t/p/';
+  const imageWidth = 'w185';
+
+  const handleCloseClick = e => {
+    e.stopPropagation();
+    if (typeof onClose === 'function') {
+      onClose();
+    }
+  };
 
   return (
-      <div className="container mx-auto py-8">
-        <div className="flex flex-row">
-          <div className="basis-1/4">
-            <img src={poster_path} alt={`${title} poster`}
-                 className="w-[323px] h-[486px]"/>
-          </div>
-          <div className="basis-3/4">
-            <div className="flex flex-row">
-              <h2 className="font-light text-5xl uppercase mr-6 pt-12 text-white"
-                  data-testid="movie-details">{title}</h2>
-              <p className="font-light text-xl border border-white rounded-full w-12 h-12 mt-14 flex justify-center items-center text-white">{vote_average}</p>
-            </div>
-            <div className="flex flex-row my-12">
-              <p className="font-light text-2xl text-pink-red mr-12">{release_date.slice(
-                  0, 4)}</p>
-              <p className="font-light text-2xl text-pink-red">{formattedRuntime}</p>
-            </div>
-            <p className="text-white opacity-50">{overview}</p>
-          </div>
+      <div className="flex items-center justify-center p-4">
+        <Button className="absolute top-8 right-44 bg-red-500 text-white text-2xl cursor-pointer" onClick={handleCloseClick}>
+          &times;
+        </Button>
+        <img className="w-48 h-72 object-cover mr-4" src={`${imageBaseUrl}${imageWidth}${imageUrl}`} alt={movieName} />
+        <div className="flex flex-col">
+          <h2 className="text-2xl font-semibold text-white mb-2">{movieName}</h2>
+          <p className="text-lg text-gray-400 mb-2">{releaseYear}</p>
+          <p className="text-lg text-gray-500 mb-2">Rating: {rating}</p>
+          <p className="text-lg text-gray-500 mb-2">Duration: {duration} min</p>
+          <p className="text-base text-gray-500 text-justify">{description}</p>
         </div>
       </div>
   );
 };
-
-export default MovieDetails;

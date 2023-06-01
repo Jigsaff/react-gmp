@@ -1,13 +1,15 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-
-import MovieDetails from '../../components/MovieDetails';
 import GenreSelect from '../../components/GenreSelect';
 import SortControl from '../../components/SortControl';
 import MovieTile from '../../components/MovieTile';
-import useFetch from '../../hooks/useFetch';
 import Header from '../../components/Header';
+import Dialog from '../../components/Dialog';
+import MovieForm from '../../components/MovieForm';
+import usePagination from '../../hooks/usePagination';
+import useFetch from '../../hooks/useFetch';
 import SearchContext from './SearchContext';
+import { API_URL } from '../../constants';
 
 const MovieListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,32 +18,43 @@ const MovieListPage = () => {
   const sortCriterion = searchParams.get('sortBy') || '';
   const activeGenre = searchParams.get('genre') || '';
 
-  const [movies, setMovies] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const sortOrder = sortCriterion === 'title' ? 'asc' : 'desc';
 
-  const url = 'http://localhost:4000/movies';
-  const params = useMemo(() => {
-    return {
-      sortBy: sortCriterion,
-      sortOrder: sortOrder,
-      search: searchQuery,
-      searchBy: 'title',
-      filter: activeGenre,
-    };
-  }, [
-    sortCriterion,
-    sortOrder,
-    searchQuery,
-    activeGenre,
-  ]);
-
+  const itemsPerPage = 6;
+  const url = API_URL;
   const navigate = useNavigate();
-  const { loading, error, data: fetchedMovies } = useFetch(url, params);
+
+  const { loading, error, data: fetchedMovies, getData } = useFetch();
+
+  const {
+    currentData,
+    nextPage,
+    prevPage,
+    currentPage,
+    maxPages,
+    resetPagination,
+  } = usePagination(fetchedMovies, itemsPerPage);
+
+  const params = {
+    sortBy: sortCriterion,
+    sortOrder: sortOrder,
+    search: searchQuery,
+    searchBy: 'title',
+    filter: activeGenre,
+    offset: (currentPage - 1) * itemsPerPage,
+    limit: itemsPerPage + 100,
+  };
 
   useEffect(() => {
-    setMovies(fetchedMovies);
-  }, [fetchedMovies]);
+    const abortController = new AbortController();
+
+    getData(url, abortController.signal, params);
+    return () => {
+      abortController.abort();
+    };
+
+  }, [sortCriterion, searchQuery, activeGenre]);
 
   const handleMovieClick = movie => {
     navigate(`/movies/${movie.id}`, {
@@ -49,16 +62,18 @@ const MovieListPage = () => {
     });
   };
 
-  const handleBackClick = () => {
-    setSelectedMovie(null);
+  const toggleModal = () => {
+    setIsDialogOpen(prev => !prev);
   };
 
-  const toggleModal = () => {
-    console.log('This should open the modal to add a movie');
+  const handleSubmit = movie => {
+    console.log('Submitted movie:', movie);
+    setIsDialogOpen(false);
   };
 
   const handleSearchQueryChange = value => {
     setSearchParams(new URLSearchParams({ ...searchParams, query: value }));
+    resetPagination();
   };
 
   const handleSortCriterionChange = value => {
@@ -69,7 +84,7 @@ const MovieListPage = () => {
     });
   };
 
-  const handleActiveGenreChange = value => {
+  const handleActiveGenreChange = ({ target: { value } }) => {
     setSearchParams(prev => {
       const newParams = new URLSearchParams(prev);
       newParams.set('genre', value);
@@ -84,44 +99,52 @@ const MovieListPage = () => {
             handleSearchQueryChange,
           }}
       >
-        <div className="bg-light-black">
+        <>
+          <Header onAddMovie={toggleModal} initialSearchQuery={searchQuery}>
+            <div className="flex justify-between px-4 pb-4">
+              <GenreSelect
+                  selectedGenre={activeGenre}
+                  onSelect={handleActiveGenreChange}
+              />
+              <SortControl
+                  sortCriterion={sortCriterion}
+                  onSortCriterion={handleSortCriterionChange}
+              />
+            </div>
+          </Header>
 
-          {selectedMovie ? (
-              <MovieDetails movie={selectedMovie}
-                            onBackClick={handleBackClick}/>
-          ) : (
-              <div>
-                <Header
-                    onAddMovie={toggleModal}
-                    initialSearchQuery={searchQuery}
-                >
-                </Header>
-                <div className="flex justify-between">
-                  <GenreSelect
-                      selectedGenre={activeGenre}
-                      onSelect={handleActiveGenreChange}
-                  />
-                  <SortControl
-                      sortCriterion={sortCriterion}
-                      onSortCriterion={handleSortCriterionChange}
-                  />
-                </div>
-              </div>
-
+          <main>
+            <div className="grid grid-cols-3 gap-8 mt-8">
+              {loading && <div>Loading...</div>}
+              {error && <div>Error: {error}</div>}
+              {currentData()
+                  .slice(0, itemsPerPage)
+                  .map(movie => (
+                      <MovieTile
+                          key={movie.id}
+                          movie={movie}
+                          onClick={handleMovieClick}
+                      />
+                  ))}
+            </div>
+            <div className="flex justify-center items-center p-4">
+              <button onClick={prevPage} disabled={currentPage === 1} className="bg-dark-gray border-0 cursor-pointer text-white px-2 py-3 rounded mr-5">
+                Prev
+              </button>
+              <span className="text-white">
+              Page {currentPage} of {maxPages}
+            </span>
+              <button onClick={nextPage} disabled={currentPage === maxPages} className="bg-dark-gray border-0 cursor-pointer text-white px-2 py-3 rounded ml-5">
+                Next
+              </button>
+            </div>
+          </main>
+          {isDialogOpen && (
+              <Dialog title="Add Movie" onClose={toggleModal}>
+                <MovieForm onSubmit={handleSubmit}/>
+              </Dialog>
           )}
-          <div className="flex flex-wrap mt-5">
-            {loading && <div>Loading...</div>}
-            {error && <div>Error: {error}</div>}
-            {movies
-                .map(movie => (
-                    <MovieTile
-                        key={movie.id}
-                        movie={movie}
-                        onClick={handleMovieClick}
-                    />
-                ))}
-          </div>
-        </div>
+        </>
       </SearchContext.Provider>
   );
 };

@@ -1,52 +1,50 @@
-import { useRef } from 'react';
-import { PortalWithState } from 'react-portal';
+import { Portal } from 'react-portal';
 import FocusTrap from 'focus-trap-react';
 
 export const Dialog = ({ title, children, onClose }) => {
-  const buttonRef = useRef(null);
-
   return (
-      <PortalWithState closeOnEsc closeOnOutsideClick onClose={onClose}>
-        {({ openPortal, closePortal, isOpen, portal }) => (
-            <div role="dialog">
-              <button
-                  className="text-white"
-                  onClick={openPortal}
-                  ref={buttonRef}
-              >
-                Open Portal
-              </button>
-              {portal(
-                  <FocusTrap
-                      focusTrapOptions={{
-                        clickOutsideDeactivates: true,
-                        escapeDeactivates: true,
-                        fallbackFocus: buttonRef.current,
-                      }}
-                  >
-                    <div
-                        className="fixed top-0 left-0 right-0 bottom-0 bg-neutral-800 bg-opacity-90 backdrop-blur-md z-50"
-                    >
-                      <div
-                          className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-                        <div className="bg-light-black p-12">
-                          <h2 className="font-light uppercase text-4xl text-white text-center">
-                            {title}
-                          </h2>
-                          <div>{children}</div>
-                          <button
-                              className="absolute top-3 right-3 text-lg text-white cursor-pointer"
-                              onClick={closePortal}
-                          >
-                            X
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </FocusTrap>,
-              )}
+      <Portal>
+        <FocusTrap>
+          <div
+              className="fixed top-0 left-0 right-0 bottom-0 bg-light-black bg-opacity-90 backdrop-blur-md z-50"
+              onClick={onClose}
+              data-testid="dialog-overlay"
+              tabIndex="-1"
+          >
+            <div
+                className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 border-2 rounded p-2"
+                onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="dialog-title"
+            >
+              <header className="flex justify-between items-center p-5 border-b">
+                <h2 id="dialog-title" className="text-white text-lg font-semibold">
+                  {title}
+                </h2>
+                <button
+                    className="bg-transparent border-none text-white text-xl font-semibold cursor-pointer"
+                    onClick={onClose}
+                    autoFocus
+                    tabIndex="0"
+                >
+                  ×
+                </button>
+              </header>
+              <div className="p-5">
+                {children}
+                {/* Add a hidden tabbable button */}
+                <button
+                    style={{ position: 'absolute', left: '-9999px' }}
+                    tabIndex="-1"
+                    aria-hidden="true"
+                >
+                  Hidden button
+                </button>
+              </div>
             </div>
-        )}
-      </PortalWithState>
+          </div>
+        </FocusTrap>
+      </Portal>
   );
 };

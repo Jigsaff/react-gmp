@@ -1,14 +1,25 @@
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useFetch from '../../hooks/useFetch';
 import MovieDetails from '../MovieDetails';
+import { API_URL } from '../../constants';
 
 export const MovieDetailsWrapper = () => {
   const { movieId } = useParams();
   const navigate = useNavigate();
 
-  const url = `http://localhost:4000/movies/${movieId}`;
-  const { loading, error, data: movieData } = useFetch(url);
+  const url = `${API_URL}/${movieId}`;
+  const { loading, error, data: movieData, getData } = useFetch();
   const movie = Array.isArray(movieData) ? movieData[0] : movieData;
+
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    getData(url, abortController.signal);
+    return () => {
+      abortController.abort();
+    };
+  }, [url, getData]);
 
   const handleMovieDetailsClose = () => {
     navigate('/');
@@ -27,8 +38,8 @@ export const MovieDetailsWrapper = () => {
   }
 
   return (
-      <div className="bg-light-black text-white w-full z-50" onClick={handleMovieDetailsClose}>
-        <MovieDetails movie={movie}/>
+      <div className="bg-light-black text-white" onClick={handleMovieDetailsClose}>
+        <MovieDetails movie={movie} onClose={handleMovieDetailsClose}/>
       </div>
   );
 };

@@ -1,50 +1,50 @@
-import { render, fireEvent } from '@testing-library/react';
-import MovieForm from './index';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { MovieForm } from './component';
 
 describe('MovieForm', () => {
-  const onSubmit = jest.fn();
-  const initialMovieInfo = {
-    title: 'Test Movie',
-    releaseDate: '2022-01-01',
-    movieUrl: 'https://example.com/movie.mp4',
-    rating: '8.5',
-    genre: 'Action',
-    duration: '2h 30min',
-    overview: 'This is a test movie',
-  };
+  test('renders form with input fields and selects', () => {
+    const onSubmit = jest.fn();
+    const movie = { id: '123', title: 'Movie Title' };
 
-  afterEach(() => {
-    jest.clearAllMocks();
+    render(<MovieForm onSubmit={onSubmit} movie={movie} />);
+
+    const titleInput = screen.getByLabelText('Title');
+    const releaseDateInput = screen.getByLabelText('Release Date');
+    const posterPathInput = screen.getByLabelText('Movie URL');
+    const ratingInput = screen.getByLabelText('Rating');
+    const genreSelect = screen.getByLabelText('Genre');
+    const runtimeInput = screen.getByLabelText('Runtime');
+    const overviewTextarea = screen.getByLabelText('Overview');
+    const resetButton = screen.getByRole('button', { name: 'Reset' });
+    const submitButton = screen.getByRole('button', { name: 'Submit' });
+
+    expect(titleInput).toBeInTheDocument();
+    expect(releaseDateInput).toBeInTheDocument();
+    expect(posterPathInput).toBeInTheDocument();
+    expect(ratingInput).toBeInTheDocument();
+    expect(genreSelect).toBeInTheDocument();
+    expect(runtimeInput).toBeInTheDocument();
+    expect(overviewTextarea).toBeInTheDocument();
+    expect(resetButton).toBeInTheDocument();
+    expect(submitButton).toBeInTheDocument();
   });
 
-  it('renders all form inputs', () => {
-    const { getByLabelText } = render(<MovieForm onSubmit={onSubmit}/>);
-    expect(getByLabelText('Title')).toBeInTheDocument();
-    expect(getByLabelText('Release Date')).toBeInTheDocument();
-    expect(getByLabelText('Movie URL')).toBeInTheDocument();
-    expect(getByLabelText('Rating')).toBeInTheDocument();
-    expect(getByLabelText('Genre')).toBeInTheDocument();
-    expect(getByLabelText('Duration')).toBeInTheDocument();
-    expect(getByLabelText('Overview')).toBeInTheDocument();
-  });
+  test('calls onReset and resets form data when reset button is clicked', () => {
+    const onSubmit = jest.fn();
+    const onReset = jest.fn();
+    const movie = { id: '123', title: 'Movie Title' };
 
-  it('calls onSubmit when form is submitted', () => {
-    const { getByLabelText, getByText } = render(<MovieForm
-        initialMovieInfo={initialMovieInfo} onSubmit={onSubmit}/>);
-    fireEvent.change(getByLabelText('Title'),
-        { target: { value: 'Updated Title' } });
-    fireEvent.submit(getByText('Submit'));
-    expect(onSubmit).toHaveBeenCalledTimes(1);
-    expect(onSubmit)
-        .toHaveBeenCalledWith({ ...initialMovieInfo, title: 'Updated Title' });
-  });
+    render(<MovieForm onSubmit={onSubmit} movie={movie} onReset={onReset} />);
 
-  it('resets form when Reset button is clicked', () => {
-    const { getByLabelText, getByText } = render(<MovieForm
-        initialMovieInfo={initialMovieInfo} onSubmit={onSubmit}/>);
-    fireEvent.change(getByLabelText('Title'),
-        { target: { value: 'Updated Title' } });
-    fireEvent.reset(getByText('Reset'));
-    expect(getByLabelText('Title')).toHaveValue(initialMovieInfo.title);
+    const titleInput = screen.getByLabelText('Title');
+    const resetButton = screen.getByRole('button', { name: 'Reset' });
+
+    const newTitle = 'New Movie Title';
+    fireEvent.change(titleInput, { target: { value: newTitle } });
+
+    fireEvent.click(resetButton);
+
+    expect(titleInput.value).toBe('');
+    expect(onReset).toHaveBeenCalled();
   });
 });

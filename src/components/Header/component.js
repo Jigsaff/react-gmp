@@ -1,28 +1,29 @@
 import { useContext } from 'react';
+import Logo from './Logo';
 import SearchContext from '../../pages/MovieListPage/SearchContext';
-import logo from '../../assets/images/logo.png';
 import { Outlet } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 export const Header = ({ selectedMovie, onAddMovie, children }) => {
   const { searchQuery, handleSearchQueryChange } = useContext(SearchContext);
+  const navigate = useNavigate();
 
   const handleAddMovieClick = () => {
-    if (typeof onAddMovie === 'function') {
-      onAddMovie();
-    }
+    navigate('/new');
   };
+
   return (
       <header
-          className="w-full relative bg-header h-[396px] flex flex-row items-center justify-center bg-cover bg-center">
-        <div className="absolute top-4 left-10">
-          <a href={'/'}><img src={logo} alt="netflixroulette"/></a>
-        </div>
-        <Outlet context={[searchQuery, handleSearchQueryChange]}/>
-        <div className="absolute top-4 right-10">
+          className="bg-header relative text-center bg-cover bg-no-repeat"
+      >
+        <div
+            className="flex items-start justify-between py-8 px-4">
+          <Logo/>
+          <Outlet context={[searchQuery, handleSearchQueryChange]}/>
           <button
               className="uppercase text-pink-red text-xl font-semibold rounded bg-light-gray/[.7] py-3 px-10"
               onClick={handleAddMovieClick}>
-            + Add Movie
+            + Add movie
           </button>
         </div>
         {children}
