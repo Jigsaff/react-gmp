@@ -1,3 +1,4 @@
+import React from "react";
 import MovieTile from '../MovieTile';
 
 export const MovieList = ({ movies, onMovieClick }) => {

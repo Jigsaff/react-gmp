@@ -1,12 +1,11 @@
-import { useState, useContext } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useContext } from 'react';
 import SearchContext from '../../pages/MovieListPage/SearchContext';
 import Button from '../Button';
 import { Outlet } from 'react-router-dom';
 
 export const SearchForm = ({ initialSearchQuery }) => {
   const [value, setValue] = useState(initialSearchQuery || '');
-  const { searchQuery, handleSearchQueryChange } = useContext(SearchContext);
+  const { handleSearchQueryChange } = useContext(SearchContext);
 
   const handleForm = event => {
     event.preventDefault();

@@ -1,5 +1,6 @@
+import React from "react";
 import { useContext } from 'react';
-import Logo from './Logo';
+import Logo from '../Header/Logo';
 import SearchContext from '../../pages/MovieListPage/SearchContext';
 import { Outlet } from 'react-router';
 import { useNavigate } from 'react-router-dom';

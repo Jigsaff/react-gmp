@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ContextMenu from '../ContextMenu';
 
 export const MovieTile = ({ movie, onClick }) => {
   const navigate = useNavigate();

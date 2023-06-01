@@ -1,3 +1,4 @@
+import React from "react";
 import { Portal } from 'react-portal';
 import FocusTrap from 'focus-trap-react';
 
@@ -33,7 +34,6 @@ export const Dialog = ({ title, children, onClose }) => {
               </header>
               <div className="p-5">
                 {children}
-                {/* Add a hidden tabbable button */}
                 <button
                     style={{ position: 'absolute', left: '-9999px' }}
                     tabIndex="-1"

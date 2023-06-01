@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { genres } from '../MovieTile/genres';
 
-export const MovieForm = ({ onSubmit, movie, onReset }) => {
+const MovieForm = ({ onSubmit, movie, onReset }) => {
   const defaultValues = {
     id: '',
     title: '',
@@ -244,3 +244,5 @@ export const MovieForm = ({ onSubmit, movie, onReset }) => {
       </div>
   );
 };
+
+export default MovieForm;

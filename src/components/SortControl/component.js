@@ -1,3 +1,5 @@
+import React from "react";
+
 export const SortControl = ({ sortCriterion, onSortCriterion }) => {
   const handleSortChange = ({ target: { value } }) => {
     onSortCriterion(value);
@@ -22,7 +24,7 @@ export const SortControl = ({ sortCriterion, onSortCriterion }) => {
         </select>
         <div className="absolute top-1/2 right-5 transform -translate-y-1/2">
           <div
-              className="w-0 h-0 border-l-5 border-r-5 border-t-5 border-transparent border-red-600 pointer-events-none"></div>
+              className="w-0 h-0 border-l-5 border-r-5 border-t-5 border-transparent border-red-600 pointer-events-none" />
         </div>
       </div>
   );
