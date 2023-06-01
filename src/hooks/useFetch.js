@@ -25,7 +25,7 @@ const useFetch = (setErrorDialogOpen, setErrorMessage) => {
     }
   }, []);
 
-  const postData = async (url, data) => {
+  const postData = useCallback(async (url, data) => {
     try {
       const response = await axios.post(url, data);
       if (response.status !== 201) {
@@ -45,9 +45,9 @@ const useFetch = (setErrorDialogOpen, setErrorMessage) => {
       }
       throw error;
     }
-  };
+  }, [setErrorDialogOpen, setErrorMessage]);
 
-  const putData = async (url, id, data) => {
+  const putData = useCallback(async (url, id, data) => {
     try {
       const transformedData = editMovieData(id, data);
       const response = await axios.put(`${url}`, transformedData, {
@@ -82,7 +82,7 @@ const useFetch = (setErrorDialogOpen, setErrorMessage) => {
       }
       throw error;
     }
-  };
+  }, [setErrorDialogOpen, setErrorMessage]);
 
   return { data, getData, postData, putData };
 };

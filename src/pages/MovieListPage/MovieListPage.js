@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import GenreSelect from '../../components/GenreSelect';
 import SortControl from '../../components/SortControl';
 import MovieTile from '../../components/MovieTile';
 import Header from '../../components/Header';
 import Dialog from '../../components/Dialog';
-import MovieForm from '../../components/MovieForm';
+import MovieForm from '../../components/MovieForm/MovieForm';
 import usePagination from '../../hooks/usePagination';
 import useFetch from '../../hooks/useFetch';
 import SearchContext from './SearchContext';
@@ -93,6 +93,7 @@ const MovieListPage = () => {
   };
 
   return (
+    /* eslint-disable react/jsx-no-constructed-context-values */
       <SearchContext.Provider
           value={{
             searchQuery,

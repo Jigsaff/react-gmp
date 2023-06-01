@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import Dialog from '../../Dialog';
-import MovieForm from '../index';
+import MovieForm from '../MovieForm';
 import { API_POST_URL } from '../../../constants';
 import useFetch from '../../../hooks/useFetch';
 import { formatMovieData } from '../../../helpers';
 import { useNavigate } from 'react-router-dom';
 
-export const AddMovieForm = () => {
+const AddMovieForm = () => {
   const navigate = useNavigate();
-  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [errorDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const { postData } = useFetch(API_POST_URL);
 
@@ -56,3 +56,5 @@ export const AddMovieForm = () => {
       </>
   );
 };
+
+export default AddMovieForm;

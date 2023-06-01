@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Dialog from '../../Dialog';
-import MovieForm from '../../MovieForm';
+import MovieForm from '../MovieForm';
 import { API_EDIT_URL } from '../../../constants';
 import useFetch from '../../../hooks/useFetch';
 
-export const EditMovieForm = () => {
+const EditMovieForm = () => {
   const { movieId } = useParams();
   const navigate = useNavigate();
-  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [setErrorDialogOpen] = useState(false);
+  const [setErrorMessage] = useState('');
   const {
     data,
     loading,
@@ -65,3 +65,5 @@ export const EditMovieForm = () => {
       </Dialog>
   );
 };
+
+export default EditMovieForm;
