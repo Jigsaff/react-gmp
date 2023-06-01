@@ -1,3 +1,4 @@
+import React from "react";
 import { Portal } from 'react-portal';
 import FocusTrap from 'focus-trap-react';
 

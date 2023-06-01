@@ -1,3 +1,5 @@
+import React from "react";
+
 export const ContextMenu = ({ show, onClose, onEdit, onDelete }) => {
   const handleEdit = e => {
     onEdit();

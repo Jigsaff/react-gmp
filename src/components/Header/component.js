@@ -1,3 +1,4 @@
+import React from "react";
 import { useContext } from 'react';
 import Logo from '../Header/Logo';
 import SearchContext from '../../pages/MovieListPage/SearchContext';

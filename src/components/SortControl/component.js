@@ -1,3 +1,5 @@
+import React from "react";
+
 export const SortControl = ({ sortCriterion, onSortCriterion }) => {
   const handleSortChange = ({ target: { value } }) => {
     onSortCriterion(value);
